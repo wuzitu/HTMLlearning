@@ -10,14 +10,14 @@
 		}
 		.bg-div{
 			background-image: url(house.jpg);
-			width: 1366px;
-			height: 768px;
+			width: 100%;
+			height: 623px;
 			margin: 0 auto;
 			position: relative;
 		}
 		.logo{
 			float: left;
-			margin: -4px 18px;
+			margin: -4px 12px;
 		}
 		.search-box{
 			position: absolute;
@@ -55,7 +55,8 @@
 		}
 		.suggest{
 			background-color: #fff;
-			width: 560px;
+			width: 559px;
+			border: 1px solid #ccc;
 		}
 		.suggest ul{
 			list-style: none;
@@ -73,6 +74,8 @@
 			background-color: #e5e5e5;
 		}
 	</style>
+	
+	
 </head>
 <body>
 	<div class="bg-div">
@@ -80,19 +83,21 @@
 			<div class="logo">
 				<img src="bing.png" class="logo">
 			</div>
-			<form class="search-form">
-				<input type="text" class="search-text">
-				<input type="submit" class="search-button" value="">
+			<form class="search-form" id="search-form">
+				<input type="text" class="search-text" id="search_input" name="q" autocomplete="off">
+				<input type="submit" class="search-button" value="" id="search_click">
 			</form>
 		</div>
 	</div>
-	<div class="suggest" id="search-suggest" style="position:absolute;top:100px;left:100px;background-color:#fff;">
+	<div class="suggest" id="search-suggest" style="display:none">
 		<ul>
 			<li>search1</li>
-			<li>search1</li>
-			<li>search1</li>
+			<li>search2</li>
+			<li>search3</li>
 		</ul>
 		
 	</div>
 </body>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="script.js"></script>
 </html>
