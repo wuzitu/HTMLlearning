@@ -1,7 +1,13 @@
+var over = false;
 //black first
 var me = true;
 var chess = document.getElementById('chessboard');
 var context = chess.getContext("2d");
+//win Array
+var win = [];
+//赢法统计数组
+var myWin = [];
+var comWin = [];
 //记录落子信息
 var chessOn = [];
 for(var i=0; i<15; i++){
@@ -9,6 +15,52 @@ for(var i=0; i<15; i++){
 	for(var j=0; j<15; j++){
 		chessOn[i][j] = 0;
 	}
+}
+for(var i=0; i<15; i++){
+	win[i]=[];
+	for(var j=0; j<15; j++){
+		win[i][j] = [];
+	}
+}
+var count = 0;
+//还是不太理解
+for(var i=0; i<15; i++){
+	for(var j=0; j<11; j++){
+		for(var k=0; k<5; k++){
+			win[i][j+k][count] = true;
+		}
+	count++;
+	}
+}
+for(var i=0; i<15; i++){
+	for(var j=0; j<11; j++){
+		for(var k=0; k<5; k++){
+			win[j+k][i][count] = true;
+		}
+	count++;
+	}
+}
+for(var i=0; i<11; i++){
+	for(var j=0; j<11; j++){
+		for(var k=0; k<5; k++){
+			win[i+k][j+k][count] = true;
+		}
+	count++;
+	}
+}
+for(var i=0; i<11; i++){
+	for(var j=14; j>3; j--){
+		for(var k=0; k<5; k++){
+			win[i+k][j-k][count] = true;
+		}
+	count++;
+	}
+}
+console.log(count);
+
+for(var i=0; i<count; i++){
+	myWin[i] = 0;
+	comWin[i] = 0;
 }
 context.strokeStyle = "#BFBFBF";
 
@@ -47,7 +99,7 @@ var oneStep = function(i,j,me){
 	gradient.addColorStop(1,"#636766");
 	}
 	else{
-	gradient.addColorStop(0,"#d1d1d1");
+	gradient.addColorStop(0,"#A6BFE4");
 	gradient.addColorStop(1,"#fff");	
 	}
 	context.fillStyle = gradient;
@@ -55,6 +107,8 @@ var oneStep = function(i,j,me){
 }
 
 chess.onclick = function(e){
+	if (over) {return;}
+	if(!me){return;}
 	var x = e.offsetX;
 	var y = e.offsetY;
 	var i = Math.floor(x/30);
@@ -67,6 +121,70 @@ chess.onclick = function(e){
 		else{
 			chessOn[i][j] = 2;
 		}
-		me = !me;
+		
+		for(var k=0; k<count; k++){
+			if(win[i][j][k]){
+				myWin[k]++;
+				comWin[k] = 6;
+				if (myWin[k] == 5) {
+					window.alert("youwin");
+					over = true;
+				}
+			}
+			if(!over){
+				me = !me;
+				computerAI();
+			}
+		}
 	}
 }
+
+var computerAI = function(){
+	var myScore = [];
+	var computerScore = [];
+	var max = 0;
+	var u=0, v=0;
+	for(var i=0; i<15; i++){
+		myScore[i] = [];
+		computerScore[i] = [];
+		for(var j=0; j<15; j++){
+			myScore[i][j] = 0;
+			computerScore[i][j] = 0;
+		}
+	}
+	for(var i=0; i<15; i++){
+		for(j=0; j<15; j++){
+			if (chessOn[i][j] == 0) {
+				for(var k=0; k<count; k++){
+					if(win[i][j][k]){
+						if (myWin[k]==1) {
+							myScore[i][j]+=200;
+						}else if (myWin[k]==2) {
+							myScore[i][j]+=400;
+						}else if (myWin[k]==3) {
+							myScore[i][j]+=2000;
+						}else if (myWin[k]==4) {
+							myScore[i][j]+=10000;
+						}
+						if (comWin[k]==1) {
+							computerScore[i][j]+=220;
+						}else if (comWin[k]==2) {
+							computerScore[i][j]+=420;
+						}else if (comWin[k]==3) {
+							computerScore[i][j]+=2100;
+						}else if (comWin[k]==4) {
+							computerScore[i][j]+=20000;
+						}
+					}
+				}
+				if (myScore[i][j] > max) {
+					max = myScore[i][j];
+					u=i;
+					v=j;
+				}
+			}
+		}
+	}
+}
+
+
