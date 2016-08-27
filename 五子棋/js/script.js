@@ -5,10 +5,10 @@ var chess = document.getElementById('chessboard');
 var context = chess.getContext("2d");
 //win Array
 var win = [];
-//璧㈡硶缁熻鏁扮粍
+//赢法统计数组
 var myWin = [];
 var comWin = [];
-//璁板綍钀藉瓙淇℃伅
+//记录落子信息
 var chessOn = [];
 for(var i=0; i<15; i++){
 	chessOn[i]=[];
@@ -23,7 +23,7 @@ for(var i=0; i<15; i++){
 	}
 }
 var count = 0;
-//杩樻槸涓嶅お鐞嗚В
+//还是不太理解
 for(var i=0; i<15; i++){
 	for(var j=0; j<11; j++){
 		for(var k=0; k<5; k++){
@@ -68,7 +68,7 @@ var back = new Image();
 back.src = "img/background.jpg";
 back.onload = function(){
 	context.drawImage(back, 0, 0, 450, 450);
-	//鑳屾櫙鍥惧姞棰滆壊濉厖
+	//背景图加颜色填充
 
 	var lineGradient = context.createLinearGradient (0, 0, 450, 450); 
 	lineGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)'); 
@@ -114,14 +114,9 @@ chess.onclick = function(e){
 	var i = Math.floor(x/30);
 	var j = Math.floor(y/30);
 	if(chessOn[i][j] == 0){
-	oneStep(i,j,me);
-		if (me) {
-			chessOn[i][j] = 1;
-		}
-		else{
-			chessOn[i][j] = 2;
-		}
-		
+		oneStep(i,j,me);
+		chessOn[i][j] = 1;
+
 		for(var k=0; k<count; k++){
 			if(win[i][j][k]){
 				myWin[k]++;
@@ -130,11 +125,11 @@ chess.onclick = function(e){
 					window.alert("youwin");
 					over = true;
 				}
-			}
-			if(!over){
-				me = !me;
-				computerAI();
-			}
+			}	
+		}
+		if(!over){
+			me = !me;
+			computerAI();
 		}
 	}
 }
@@ -181,10 +176,41 @@ var computerAI = function(){
 					max = myScore[i][j];
 					u=i;
 					v=j;
+				}else if (myScore[i][j]==max) {
+				 if (computerScore[i][j]>computerScore[u][v]) {
+				 	u=i;
+					v=j;
+				 }
+				}
+				 if (computerScore[i][j] > max) {
+					max = myScore[i][j];
+					u=i;
+					v=j;
+				}else if (computerScore[i][j]==max) {
+				 if (myScore[i][j]>myScore[u][v]) {
+				 	u=i;
+					v=j;
+				 }
 				}
 			}
 		}
 	}
+	oneStep(u,v,false);
+	chessOn[u][v]=2;
+	for(var k=0; k<count; k++){
+		if(win[u][v][k]){
+			comWin[k]++;
+			myWin[k] = 6;
+			if (comWin[k] == 5) {
+				window.alert("comWin");
+				over = true;
+			}
+		}
+	}
+	if(!over){
+		me = !me;
+	}
 }
+
 
 
